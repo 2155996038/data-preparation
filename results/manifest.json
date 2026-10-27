@@ -1,9 +1,16 @@
 {
-  "generated_at": "2026-10-27T15:23:15",
+  "generated_at": "2026-10-27T15:28:20",
   "fetch_date": "2026-10-27",
   "python": "3.13.14",
   "pandas": "3.1.0",
   "numpy": "2.5.3",
+  "ran_datasets": [
+    "watermelon",
+    "boston",
+    "titanic",
+    "mnist"
+  ],
+  "is_partial_run": false,
   "datasets": [
     {
       "key": "watermelon",
@@ -53,7 +60,7 @@
       "used_source": "UCI housing.data 原始文件（空白分隔 → CSV 列映射）",
       "version": "UCI Housing（506 条，1993 年快照，未做任何删改）",
       "fetch_date": "2026-10-27",
-      "elapsed_s": 0.03,
+      "elapsed_s": 0.02,
       "label_counts": null,
       "pixel_range": null
     },
@@ -83,7 +90,7 @@
       "used_source": "Kaggle train.csv 原始文件（原样落盘，仅重写编码/换行）",
       "version": "Kaggle train.csv 原始快照（891 行 × 12 列）",
       "fetch_date": "2026-10-27",
-      "elapsed_s": 0.02,
+      "elapsed_s": 0.01,
       "label_counts": null,
       "pixel_range": null
     },
@@ -118,7 +125,7 @@
       "used_source": "IDX 原始文件（S3 镜像）",
       "version": "原始 IDX v3（60000 / 10000 标准划分）",
       "fetch_date": "2026-10-27",
-      "elapsed_s": 3.97,
+      "elapsed_s": 3.85,
       "label_counts": {
         "train": [
           5923,

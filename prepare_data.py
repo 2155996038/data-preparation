@@ -370,21 +370,42 @@ def run(keys: list[str], *, force: bool = False, skip_download: bool = False) ->
             print(f"  ✗ {r['display_name']:<22} {r['error_type']}: {r['error']}")
     print("=" * 72)
 
-    _write_reports(results)
+    _write_reports(results, keys)
     print(f"报告：{RESULT_DIR / 'data_report.md'}")
     print(f"清单：{RESULT_DIR / 'manifest.json'}")
     return failed
 
 
-def _write_reports(results: list[dict]) -> None:
+def _merge_manifest(results: list[dict], ran_keys: list[str]) -> list[dict]:
+    """合并清单：部分运行（--only）时保留未运行数据集的既有记录。
+
+    否则 ``--only mnist`` 一跑，manifest 里另外三个数据集的来源与 SHA256
+    就被抹掉了——报告从此不完整，而用户往往不会察觉。
+    """
+    path = RESULT_DIR / "manifest.json"
+    if len(ran_keys) >= len(PREPARERS) or not path.exists():
+        return results
+    try:
+        old = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return results
+    by_key = {d["key"]: d for d in old.get("datasets", []) if "key" in d}
+    by_key.update({r["key"]: r for r in results})
+    return [by_key[k] for k in dataset_specs.PREPARE_ORDER if k in by_key]
+
+
+def _write_reports(results: list[dict], ran_keys: list[str]) -> None:
     """写 results/data_report.md 与 results/manifest.json。"""
+    merged = _merge_manifest(results, ran_keys)
     manifest = {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "fetch_date": FETCH_DATE,
         "python": sys.version.split()[0],
         "pandas": pd.__version__,
         "numpy": np.__version__,
-        "datasets": results,
+        "ran_datasets": list(ran_keys),
+        "is_partial_run": len(ran_keys) < len(PREPARERS),
+        "datasets": merged,
     }
     (RESULT_DIR / "manifest.json").write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8"
@@ -397,13 +418,20 @@ def _write_reports(results: list[dict]) -> None:
         f"- 数据获取日期：{FETCH_DATE}",
         f"- 运行环境：Python {manifest['python']} / pandas {manifest['pandas']} / "
         f"numpy {manifest['numpy']}",
+    ]
+    if manifest["is_partial_run"]:
+        lines.append(
+            f"- **本次为部分运行**：只处理了 {', '.join(ran_keys)}；"
+            "其余数据集沿用上一次的记录"
+        )
+    lines += [
         "",
         "## 总览",
         "",
         "| 数据集 | 文件 | 行 | 列 | 缺失单元格 | 大小 | 状态 |",
         "|---|---|---|---|---|---|---|",
     ]
-    for r in results:
+    for r in merged:
         if r["status"] == "ok":
             lines.append(
                 f"| {r['display_name']} | `{r['filename']}` | {r['rows']} | {r['cols']} "
@@ -412,11 +440,11 @@ def _write_reports(results: list[dict]) -> None:
         else:
             lines.append(
                 f"| {r['display_name']} | — | — | — | — | — | "
-                f"失败（{r['error_type']}） |"
+                f"失败（{r.get('error_type', '未知')}） |"
             )
 
     lines += ["", "## 明细", ""]
-    for r in results:
+    for r in merged:
         lines.append(f"### {r['display_name']}（`{r['key']}`）")
         lines.append("")
         if r["status"] != "ok":
