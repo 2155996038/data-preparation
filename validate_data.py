@@ -671,7 +671,12 @@ def _wm_matches_source() -> str:
 # 运行器
 # ==========================================================================
 def run_validation(keys: list[str] | None = None, *, verbose: bool = False) -> list[dict]:
-    """执行全部检查，返回结果列表（每项含 dataset / name / ok / detail）。"""
+    """执行全部检查，返回结果列表（每项含 dataset / name / ok / detail）。
+
+    CSV 尚未生成的 dataset 记为 ``skipped``：MNIST 两个大文件不入版本库，
+    干净 clone 上它们本就不存在，报"失败"会误导，因此与 pytest 的 skip 保持
+    一致语义——不计入通过率，只单独提示。
+    """
     keys = keys or list(dataset_specs.PREPARE_ORDER)
     results: list[dict] = []
 
@@ -679,6 +684,13 @@ def run_validation(keys: list[str] | None = None, *, verbose: bool = False) -> l
         spec = dataset_specs.get(key)
         items = csv_spec_checks(key) + list(CHECKS.get(key, []))
         print(f"\n[{key}] {spec.display_name}（{len(items)} 项检查）")
+        if not (DATA_DIR / spec.filename).exists():
+            print(f"  ⊘ data/{spec.filename} 不存在，跳过")
+            print("    先运行 python prepare_data.py（或从提交压缩包解出 data/）")
+            results.append({"dataset": key, "name": "数据集已准备", "ok": True,
+                            "skipped": True,
+                            "detail": f"data/{spec.filename} 不存在，已跳过"})
+            continue
         for name, fn in items:
             try:
                 detail = fn() or ""
@@ -691,15 +703,24 @@ def run_validation(keys: list[str] | None = None, *, verbose: bool = False) -> l
                                 "detail": str(exc)})
                 print(f"  ✗ {name}\n      {str(exc).replace(chr(10), chr(10) + '      ')}")
         passed = sum(1 for r in results if r["dataset"] == key and r["ok"])
-        total = sum(1 for r in results if r["dataset"] == key)
-        print(f"  → {passed}/{total} 通过")
+        total = sum(1 for r in results
+                    if r["dataset"] == key and not r.get("skipped"))
+        if total:
+            print(f"  → {passed}/{total} 通过")
 
-    ok = sum(1 for r in results if r["ok"])
+    checked = [r for r in results if not r.get("skipped")]
+    skipped = [r for r in results if r.get("skipped")]
+    ok = sum(1 for r in checked if r["ok"])
     print("\n" + "=" * 72)
-    print(f"校验汇总：{ok}/{len(results)} 项通过")
-    if ok != len(results):
+    print(f"校验汇总：{ok}/{len(checked)} 项通过", end="")
+    if skipped:
+        print(f"（另有 {len(skipped)} 个数据集未准备，已跳过："
+              f"{', '.join(r['dataset'] for r in skipped)}）")
+    else:
+        print()
+    if ok != len(checked):
         print("失败项：")
-        for r in results:
+        for r in checked:
             if not r["ok"]:
                 print(f"  - [{r['dataset']}] {r['name']}")
     print("=" * 72)
@@ -709,22 +730,30 @@ def run_validation(keys: list[str] | None = None, *, verbose: bool = False) -> l
 def write_report(results: list[dict]) -> Path:
     """把校验结果写成 results/validation_report.md。"""
     U.ensure_dir(RESULT_DIR)
-    ok = sum(1 for r in results if r["ok"])
+    checked = [r for r in results if not r.get("skipped")]
+    skipped = [r for r in results if r.get("skipped")]
+    ok = sum(1 for r in checked if r["ok"])
     lines = [
         "# 数据校验报告",
         "",
         f"- 生成时间：{datetime.now().isoformat(timespec='seconds')}",
-        f"- 结果：**{ok} / {len(results)} 项通过**",
+        f"- 结果：**{ok} / {len(checked)} 项通过**",
+    ]
+    if skipped:
+        lines.append(
+            f"- 跳过 {len(skipped)} 个未准备的数据集："
+            f"{', '.join(r['dataset'] for r in skipped)}"
+            "（MNIST 大文件不入版本库，运行 `python prepare_data.py` 即可生成）"
+        )
+    lines += [
         "",
         "| 数据集 | 检查项 | 结果 | 说明 |",
         "|---|---|---|---|",
     ]
     for r in results:
         detail = str(r["detail"]).replace("\n", " ").replace("|", "\\|")[:90]
-        lines.append(
-            f"| {r['dataset']} | {r['name']} | {'通过' if r['ok'] else '**失败**'} "
-            f"| {detail} |"
-        )
+        status = "跳过" if r.get("skipped") else ("通过" if r["ok"] else "**失败**")
+        lines.append(f"| {r['dataset']} | {r['name']} | {status} | {detail} |")
     lines.append("")
     path = RESULT_DIR / "validation_report.md"
     path.write_text("\n".join(lines), encoding="utf-8")
