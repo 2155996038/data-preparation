@@ -439,7 +439,9 @@ def _boston_value_domains() -> str:
             (df[col] >= 0).all() and (df[col] % 1 == 0).all(),
             f"{col} 应为非负整数",
         )
-    return f"CHAS {sorted(df['CHAS'].unique())} / MEDV [{df['MEDV'].min()}, {df['MEDV'].max()}]"
+    chas_vals = sorted(int(v) for v in df["CHAS"].unique())
+    return (f"CHAS {chas_vals} / MEDV "
+            f"[{df['MEDV'].min():.1f}, {df['MEDV'].max():.1f}]")
 
 
 @check("boston")

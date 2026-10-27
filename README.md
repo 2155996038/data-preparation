@@ -34,6 +34,7 @@ CSV，过程可追溯、结果可复现、异常有提示、提交有代码而�
 ├── prep_utils.py               ← 通用工具：下载重试、编码探测、原子写出、IDX 解析
 ├── dataset_specs.py            ← 数据集元信息（来源、版本、期望形状、列名）
 ├── watermelon3_data.py         ← 西瓜数据集 3.0 的教材原表常量（含自检）
+├── make_zip.py                 ← 打包：按目录名生成 <目录名>.zip
 ├── requirements.txt
 └── README.md
 ```
@@ -74,6 +75,9 @@ python validate_data.py
 
 # 3) 单元测试（82 个用例）
 python -m pytest test_data.py -q
+
+# 4) 打包提交（目录改名后会生成 <新目录名>.zip）
+python make_zip.py
 ```
 
 常见参数：
