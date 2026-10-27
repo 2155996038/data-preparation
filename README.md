@@ -13,8 +13,8 @@ CSV，过程可追溯、结果可复现、异常有提示、提交有代码而�
 ```
 2025111142_陈锦煌_数据准备/
 ├── data/                       ← 5 个规范 CSV（提交物）
-│   ├── mnist_train.csv             60000 × 785，无表头，104.5 MB
-│   ├── mnist_test.csv              10000 × 785，无表头，17.4 MB
+│   ├── mnist_train.csv             60000 × 785，无表头，104.5 MB　※ 不入 Git
+│   ├── mnist_test.csv              10000 × 785，无表头，17.4 MB　※ 不入 Git
 │   ├── boston_housing.csv          506 × 14，有表头
 │   ├── titanic_train.csv           891 × 12，有表头
 │   └── watermelon3.0.csv           17 × 10，有表头
@@ -41,6 +41,16 @@ CSV，过程可追溯、结果可复现、异常有提示、提交有代码而�
 **为什么把元信息单独放 `dataset_specs.py`**：来源、版本、期望形状这些信息在
 `prepare_data.py`、`validate_data.py`、README、`SOURCES.md` 里都要用到。
 集中一处定义，改一个地方全部同步，不会出现"报告里说 506 行、校验里写 507 行"这种自相矛盾。
+
+**关于 MNIST 两个 CSV 不入 Git**：`mnist_train.csv` 为 104.5 MiB，超过 GitHub 与 Gitee
+单文件 100 MiB 的硬上限（push 时会被 `pre-receive hook` 以 `GH001` 拒绝，且该限制对
+**提交历史里出现过的任何 blob** 都生效，事后删除文件并不能解决）。因此：
+
+- 版本库只保存脚本、小体积数据、运行报告与图表，clone 后执行
+  `python prepare_data.py` 即可从官方 IDX 源重新生成这两个 CSV（见第三节）；
+- 完整的 5 个 CSV 随提交包 `2025111142_陈锦煌_数据准备.zip` 一并交付；
+- 缺少 `data/*.csv` 时，`test_data.py` 会自动跳过相关用例而不是报错，因此
+  在干净 clone 上 `pytest` 仍可正常执行。
 
 ---
 

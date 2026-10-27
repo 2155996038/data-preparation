@@ -96,6 +96,10 @@ def test_validation_report_all_pass():
 # 二、数据集专属的关键断言（抽查，便于答辩时直接指认）
 # ==========================================================================
 @requires_data
+@pytest.mark.skipif(
+    not (DATA_DIR / "mnist_train.csv").exists(),
+    reason="MNIST 大文件不入 Git，需先运行 python prepare_data.py --only mnist",
+)
 def test_mnist_shape_and_range():
     """MNIST：60000×785 / 10000×785，标签 0–9，像素 0–255 且未归一化。"""
     train = DATA_DIR / "mnist_train.csv"

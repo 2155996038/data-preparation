@@ -25,6 +25,16 @@ desktop.ini
 .idea/
 *.swp
 
-# 注意：data/ 下的 5 个 CSV **要提交**。
+# 注意：data/ 下的小 CSV **要提交**。
 # 作业第 12 节验收要求"解压后按 README 可复现，代码与数据一致"，
 # 因此成品数据必须随代码一起提交，不能靠 .gitignore 排除掉。
+
+# ---- 例外：MNIST 两个大 CSV 不入 Git ----
+# mnist_train.csv 为 104.5 MiB，超过 GitHub / Gitee 单文件 100 MiB 的硬上限
+# （push 时会被 pre-receive hook 以 GH001 拒绝，且历史里存在的 blob 同样计入）。
+# 二者可由 prepare_data.py 从官方 IDX 源一键重新生成（见 README 第五节），
+# 提交用的完整数据随 "2025111142_陈锦煌_数据准备.zip" 一同交付。
+# 若确需入库，请改用 Git LFS：
+#   git lfs track "data/mnist_*.csv"
+data/mnist_train.csv
+data/mnist_test.csv
