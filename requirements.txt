@@ -1,0 +1,15 @@
+# 第 8 周实践二 · 数据准备 —— 依赖
+#
+# 只用 pandas + numpy 两个第三方库：
+#   - MNIST 走标准库 gzip 手动解析 IDX 二进制，不需要 TensorFlow / Keras；
+#   - 波士顿房价直接读 UCI 原始空白分隔文本，不需要 scikit-learn
+#     （作业明确禁止使用已弃用的 sklearn.datasets.load_boston）。
+#
+# 安装：pip install -r requirements.txt
+# 版本为实际验证通过的版本，更高的兼容版本一般也可用。
+
+pandas>=2.0,<4.0
+numpy>=1.24,<3.0
+
+# 仅运行单元测试时需要
+pytest>=7.4

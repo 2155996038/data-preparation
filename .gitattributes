@@ -1,0 +1,16 @@
+# 数据文件**禁止**任何换行符转换。
+# 本机 git 的 core.autocrlf 默认为 true，若不锁定，checkout 时 CSV 的 LF 会被
+# 改写成 CRLF——文件 SHA256 立刻变化，results/manifest.json 记录的校验和失效，
+# "两次运行结果逐字节一致"的可复现性也就不成立了。
+*.csv -text
+*.gz  -text
+*.npz -text
+
+# 源码与文档统一 LF，保证跨平台 diff 干净
+*.py  text eol=lf
+*.md  text eol=lf
+*.txt text eol=lf
+
+# git 自身的配置也不做转换
+.gitignore     text eol=lf
+.gitattributes text eol=lf

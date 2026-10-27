@@ -1,0 +1,30 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+.ipynb_checkpoints/
+
+# ---- 原始下载缓存 ----
+# raw/ 里是 22 MB 的原始下载物，随时可由 prepare_data.py 重新拉取，
+# 不纳入版本库；要核对原始文件可用 results/manifest.json 里的来源地址重下。
+raw/
+*.part
+
+# ---- 临时文件 ----
+# 原子写入用的中间文件，正常情况下不会残留
+*.tmp
+
+# ---- 操作系统 ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- 编辑器 ----
+.vscode/
+.idea/
+*.swp
+
+# 注意：data/ 下的 5 个 CSV **要提交**。
+# 作业第 12 节验收要求"解压后按 README 可复现，代码与数据一致"，
+# 因此成品数据必须随代码一起提交，不能靠 .gitignore 排除掉。

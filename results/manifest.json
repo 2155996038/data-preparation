@@ -1,0 +1,154 @@
+{
+  "generated_at": "2026-10-27T15:23:15",
+  "fetch_date": "2026-10-27",
+  "python": "3.13.14",
+  "pandas": "3.1.0",
+  "numpy": "2.5.3",
+  "datasets": [
+    {
+      "key": "watermelon",
+      "display_name": "西瓜数据集 3.0",
+      "status": "ok",
+      "filename": "watermelon3.0.csv",
+      "rows": 17,
+      "cols": 10,
+      "shape": [
+        17,
+        10
+      ],
+      "missing": {},
+      "missing_total": 0,
+      "sha256": "29d03effe207088a414894e11f1173a2d69a318cae6bbb00b69f046fe68f9427",
+      "size_bytes": 1098,
+      "extra_files": {},
+      "source_name": "《机器学习》（周志华，清华大学出版社，2016）附录 西瓜数据集 3.0",
+      "source_url": "（教材附录表格，无公开下载链接，故以代码内嵌常量形式落盘）",
+      "used_url": "（教材附录表格，无公开下载链接，故以代码内嵌常量形式落盘）",
+      "used_source": "教材附录原表转录（内嵌常量）",
+      "version": "3.0（17 个样本；区别于 2.0 的 17 样本无密度/含糖率、4.0 的 17 样本含纹理）",
+      "fetch_date": "2026-10-27",
+      "elapsed_s": 0.01,
+      "label_counts": null,
+      "pixel_range": null
+    },
+    {
+      "key": "boston",
+      "display_name": "波士顿房价",
+      "status": "ok",
+      "filename": "boston_housing.csv",
+      "rows": 506,
+      "cols": 14,
+      "shape": [
+        506,
+        14
+      ],
+      "missing": {},
+      "missing_total": 0,
+      "sha256": "d0a8dba1d66346fb31288ad7f629f78c7a9709e5d8a2b0eff718aa352bad1b48",
+      "size_bytes": 37145,
+      "extra_files": {},
+      "source_name": "UCI Machine Learning Repository · Housing",
+      "source_url": "https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.data",
+      "used_url": "https://archive.ics.uci.edu/ml/machine-learning-databases/housing/housing.data",
+      "used_source": "UCI housing.data 原始文件（空白分隔 → CSV 列映射）",
+      "version": "UCI Housing（506 条，1993 年快照，未做任何删改）",
+      "fetch_date": "2026-10-27",
+      "elapsed_s": 0.03,
+      "label_counts": null,
+      "pixel_range": null
+    },
+    {
+      "key": "titanic",
+      "display_name": "泰坦尼克号",
+      "status": "ok",
+      "filename": "titanic_train.csv",
+      "rows": 891,
+      "cols": 12,
+      "shape": [
+        891,
+        12
+      ],
+      "missing": {
+        "Age": 177,
+        "Cabin": 687,
+        "Embarked": 2
+      },
+      "missing_total": 866,
+      "sha256": "8331e5a2532f5fdb66153a8fc053df08a7dc9d2584f246c7fb1752f0a7139ca5",
+      "size_bytes": 62002,
+      "extra_files": {},
+      "source_name": "Kaggle · Titanic: Machine Learning from Disaster（社区镜像 datasciencedojo/datasets）",
+      "source_url": "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
+      "used_url": "https://raw.githubusercontent.com/datasciencedojo/datasets/master/titanic.csv",
+      "used_source": "Kaggle train.csv 原始文件（原样落盘，仅重写编码/换行）",
+      "version": "Kaggle train.csv 原始快照（891 行 × 12 列）",
+      "fetch_date": "2026-10-27",
+      "elapsed_s": 0.02,
+      "label_counts": null,
+      "pixel_range": null
+    },
+    {
+      "key": "mnist",
+      "display_name": "MNIST",
+      "status": "ok",
+      "filename": "mnist_train.csv",
+      "rows": 60000,
+      "cols": 785,
+      "shape": [
+        60000,
+        785
+      ],
+      "missing": {},
+      "missing_total": 0,
+      "sha256": "fb60bc58af4dac3554e394af262b3184479833d3cc540ff8783f274b73492d5d",
+      "size_bytes": 109575994,
+      "extra_files": {
+        "mnist_test.csv": {
+          "sha256": "51c292478d94ec3a01461bdfa82eb0885d262eb09e615679b2d69dedb6ad09e7",
+          "size_bytes": 18289443,
+          "shape": [
+            10000,
+            785
+          ]
+        }
+      },
+      "source_name": "MNIST 官方 IDX 文件（LeCun 等）· S3 镜像",
+      "source_url": "https://ossci-datasets.s3.amazonaws.com/mnist/",
+      "used_url": "https://ossci-datasets.s3.amazonaws.com/mnist/",
+      "used_source": "IDX 原始文件（S3 镜像）",
+      "version": "原始 IDX v3（60000 / 10000 标准划分）",
+      "fetch_date": "2026-10-27",
+      "elapsed_s": 3.97,
+      "label_counts": {
+        "train": [
+          5923,
+          6742,
+          5958,
+          6131,
+          5842,
+          5421,
+          5918,
+          6265,
+          5851,
+          5949
+        ],
+        "test": [
+          980,
+          1135,
+          1032,
+          1010,
+          982,
+          892,
+          958,
+          1028,
+          974,
+          1009
+        ]
+      },
+      "pixel_range": [
+        0,
+        255
+      ]
+    }
+  ]
+}
